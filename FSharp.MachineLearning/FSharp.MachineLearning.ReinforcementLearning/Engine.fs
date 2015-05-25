@@ -1,7 +1,6 @@
 ﻿namespace FSharp.MachineLearning.ReinforcementLearning
 
 module Engine =
-
     type Agent = {
         id : int
     }
@@ -53,5 +52,16 @@ module Engine =
         (newState, possipleActions)
 
     (*
-        TODO : Make the Q-learning algorithm here
+        Note: Single agent Q-learning
     *)
+    let doLearningStep alpha gamma lookup isDone previousState previousAction currentState currentAction =
+        let qsa = lookup previousState previousAction
+
+        let qsap =
+            match isDone with
+            | true -> 0.0
+            | false -> lookup currentState currentAction
+
+        let newQsa = qsa + alpha * ((currentState.reward + gamma) * (qsap - qsa))
+
+        (previousState, previousAction, newQsa)
