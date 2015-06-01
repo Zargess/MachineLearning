@@ -2,7 +2,7 @@
 
 module Engine =
     type Agent = {
-        id : int
+        id : string
     }
     
     type Action = {
@@ -21,6 +21,17 @@ module Engine =
         state               := State
     *)
     let isGameDone func state = func state
+
+    (*
+        This function returns the current possition of an agent in the world.
+        It needs the current state of the game.
+        state               := State
+
+        findAgentPosition   := State -> int
+    *)
+    let findAgentPosition state =
+        let id = state.agent.id
+        List.findIndex (fun x -> x = id) state.world
 
     (*
         This function takes 5 arguments.
