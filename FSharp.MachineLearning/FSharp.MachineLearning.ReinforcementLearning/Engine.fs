@@ -1,6 +1,7 @@
 ﻿namespace FSharp.MachineLearning.ReinforcementLearning
 
 module Engine =
+
     type Agent = {
         id : string
     }
@@ -14,13 +15,6 @@ module Engine =
         reward : float;
         agent : Agent
     }
-
-    (*
-        This function is to check if the given state is the last state
-        func                := State -> bool
-        state               := State
-    *)
-    let isGameDone func state = func state
 
     (*
         This function returns the current possition of an agent in the world.
@@ -76,3 +70,10 @@ module Engine =
         let newQsa = qsa + alpha * ((currentState.reward + gamma) * (qsap - qsa))
 
         (previousState, previousAction, newQsa)
+
+    (*
+        TODO : Make this function get either the action with the best reward or a random action.
+        If the random value generated is greater than episilon we use the greedy function. If not we use a random value
+    *)
+    let getAction random lookup getPossipleActions epsilon currentState =
+        ()

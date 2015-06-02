@@ -33,30 +33,37 @@ let initialState : Engine.State = {
     agent = { id = "Humus" }
 }
 
-let actionMap = Map.ofList [ (0, (4, -1, -1)); (1, (3, 5, -1)); (2, (3, -1, -1)); (3, (1, 2, 4)); (4, (3, 5, -1)); (5, (1, 4, -1)); ]
-
 let getNextAgent (agent : Engine.Agent) = agent
 
 let performAction (state : Engine.State) (action : Engine.Action) = 
     replaceAt initialWorld state.agent.id action.value
 
-let reward (state : Engine.State) = 
+let reward won (state : Engine.State) = 
     match Engine.findAgentPosition state with
     | 5 -> 100.0
     | _ -> 0.0
 
-let getAvailableActions (state : Engine.State) =
+let getAvailableActions (actionMap : Map<int, int list>) (state : Engine.State) =
     let position = Engine.findAgentPosition state
     actionMap.[position]
 
-let lookup (map : Map<(Engine.State, Engine.Action),float>) (state : Engine.State) (action : Engine.Action) =
-    match map.ContainsKey (state, action) with
+let lookup (map : Map<(Engine.State * Engine.Action), float>) (state : Engine.State) (action : Engine.Action) =
+    match map.ContainsKey((state, action)) with
+    | true -> map.[(state, action)]
+    | false -> 0.0
+
+let isWinningState (state : Engine.State) =
+    let pos = Engine.findAgentPosition state
+    match pos with
+    | 5 -> true
+    | _ -> false
 
 (*
-    TODO : This is is the section where the experiment should run
+    TODO : This is is the section where the experiment should run. Make a random number generator
 *)
 do
-    
+    let actionMap = Map.ofList [ (0, [4;]); (1, [3; 5;]); (2, [3;]); (3, [1; 2; 4]); (4, [3; 5;]); (5, [1; 4;]); ]
+    let getActions = getAvailableActions actionMap
     printfn "Hello world"
 
 
