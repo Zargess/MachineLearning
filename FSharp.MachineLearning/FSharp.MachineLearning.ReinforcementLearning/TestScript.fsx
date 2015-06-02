@@ -40,3 +40,23 @@ let getNextAgent (agent : Engine.Agent) = agent
 let performAction (state : Engine.State) (action : Engine.Action) = 
     replaceAt initialWorld state.agent.id action.value
 
+let reward (state : Engine.State) = 
+    match Engine.findAgentPosition state with
+    | 5 -> 100.0
+    | _ -> 0.0
+
+let getAvailableActions (state : Engine.State) =
+    let position = Engine.findAgentPosition state
+    actionMap.[position]
+
+let lookup (map : Map<(Engine.State, Engine.Action),float>) (state : Engine.State) (action : Engine.Action) =
+    match map.ContainsKey (state, action) with
+
+(*
+    TODO : This is is the section where the experiment should run
+*)
+do
+    
+    printfn "Hello world"
+
+
