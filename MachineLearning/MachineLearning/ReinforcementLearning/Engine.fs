@@ -1,4 +1,5 @@
-﻿namespace FSharp.MachineLearning.ReinforcementLearning
+﻿
+namespace FSharp.MachineLearning.ReinforcementLearning.Experimental
 
 module Engine =
 
