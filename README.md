@@ -1,6 +1,7 @@
 # MachineLearning
+<b>General machine learning library for F#</b>
+
 Currently in pre alfpha state. No working code as of yet.
-General machine learning library for F#
 
 This library is intentet to include as many types of Machine Learning as possiple and make it easier to quickly create a program which uses machine learning.
 
