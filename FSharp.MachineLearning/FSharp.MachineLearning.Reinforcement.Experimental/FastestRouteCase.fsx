@@ -2,8 +2,8 @@
 // Learn more about F# at http://fsharp.org. See the 'F# Tutorial' project
 // for more guidance on F# programming.
 
-#load "..\Engine.fs"
-open FSharp.MachineLearning.ReinforcementLearning.Experimental
+#load "Engine.fs"
+open FSharp.MachineLearning.Reinforcement.Experimental
 
 // Define your library scripting code here
 
@@ -66,5 +66,6 @@ do
     let actionMap = Map.ofList [ (0, [4;]); (1, [3; 5;]); (2, [3;]); (3, [1; 2; 4]); (4, [3; 5;]); (5, [1; 4;]); ]
     let getActions = getAvailableActions actionMap
     printfn "Hello world"
+
 
 
