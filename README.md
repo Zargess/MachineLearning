@@ -18,6 +18,6 @@ Later work will be focused arround structured Machine Learning.
 
 Plans for the library:
 <ul>
-  <li>Complete cross platform</li>
+  <li>Complete cross platform with no ties to .Net</li>
   <li>All central algorithms implemented in a general and reusable fashion</li>
 </ul>
