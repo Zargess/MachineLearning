@@ -76,5 +76,24 @@ module Engine =
         TODO : Make this function get either the action with the best reward or a random action.
         If the random value generated is greater than episilon we use the greedy function. If not we use a random value
     *)
-    let getAction random lookup getPossipleActions epsilon currentState =
-        ()
+
+    let rec getActionGreedy lookup currentState actions bestActionSoFar =
+        let currentBest = lookup (currentState, bestActionSoFar)
+        match actions with
+        | [] -> currentBest
+        | hd::tl ->
+            let currentActionValue = lookup (currentState, hd)
+            match currentActionValue with
+            | x when x > currentBest -> getActionGreedy lookup currentState tl hd
+            | _ -> getActionGreedy lookup currentState tl bestActionSoFar
+
+    let getAction (random : System.Random) lookup getPossipleActions epsilon currentState =
+        let possipleActions = getPossipleActions currentState
+        match possipleActions with
+        | [] -> None
+        | car::cdr ->
+            let randomNumber = random.NextDouble()
+            match randomNumber with
+            | x when x > epsilon -> Some(getActionGreedy lookup currentState possipleActions car)
+            | _ ->
+                
