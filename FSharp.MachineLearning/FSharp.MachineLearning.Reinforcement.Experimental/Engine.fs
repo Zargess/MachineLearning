@@ -1,5 +1,4 @@
-﻿
-namespace FSharp.MachineLearning.Reinforcement.Experimental
+﻿namespace FSharp.MachineLearning.Reinforcement.Experimental
 
 module Engine =
 
@@ -16,6 +15,17 @@ module Engine =
         reward : float;
         agent : Agent
     }
+
+    (*
+        This function replaces a given element at the given index in a list with a new value
+    *)
+    let rec replaceAt list value index =
+        match list with
+        | [] when index = 0 -> [ value; ]
+        | [] when index > 0 -> failwith "Index bigger than list size!"
+        | car::cdr when index > 0 -> car :: replaceAt cdr value (index - 1)
+        | car::cdr when index = 0 -> value :: cdr
+        | _ -> failwith "One or more errors occurred!"
 
     (*
         This function returns the current possition of an agent in the world.
@@ -59,6 +69,18 @@ module Engine =
 
     (*
         Note: Single agent Q-learning
+        This function takes 8 arguments:
+
+        alpha               := float
+        gamma               := float
+        lookup              := State -> Action -> float
+        isDone              := bool
+        previousState       := State
+        previousAction      := Action
+        currentState        := State
+        currentAction       := Action
+
+        This is the function that does the learning step. It computes the reward for a given state action pair and returns it for the user to save.
     *)
     let doLearningStep alpha gamma lookup isDone previousState previousAction currentState currentAction =
         let qsa = lookup previousState previousAction
@@ -73,9 +95,8 @@ module Engine =
         (previousState, previousAction, newQsa)
 
     (*
-        TODO : Make these functions use a cross platform random generator
+        Finds the action which gives the best expected reward
     *)
-    
     let rec getActionGreedy lookup currentState actions bestActionSoFar =
         let currentBest = lookup (currentState, bestActionSoFar)
         match actions with
@@ -86,9 +107,15 @@ module Engine =
             | x when x > currentBest -> getActionGreedy lookup currentState tl hd
             | _ -> getActionGreedy lookup currentState tl bestActionSoFar
 
-    let getRandomAction (random : System.Random) (actions : Action list) currentState =
+    (*
+        Finds a random action
+    *)
+    let getRandomAction (random : System.Random) (actions : Action list) =
         actions.[random.Next(0, actions.Length)]
-
+    
+    (*
+        Either finds the action with the best expected payoff or a random action.
+    *)
     let getActionEGreedy (random : System.Random) lookup (actions : Action list) epsilon currentState =
         match actions with
         | [] -> None
@@ -96,6 +123,8 @@ module Engine =
             let randomNumber = random.NextDouble()
             match randomNumber with
             | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
-            | _ -> Some(getRandomAction random actions currentState)
+            | _ -> Some(getRandomAction random actions)
 
-    (*----------------------------------------------------------------------------*)
+    (*
+        TODO : Consider making the general learning run a general function here
+    *)
