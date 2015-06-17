@@ -17,9 +17,9 @@ module FastestRouteCase =
         replaceAt initialWorld state.agent.id action.value
 
     let reward won (state : State) = 
-        match findAgentPosition state with
-        | 5 -> 100.0
-        | _ -> 0.0
+        match won with
+        | true -> 100.0
+        | false -> 0.0
 
     (*
         TODO : Consider moving this to the Engine
@@ -44,12 +44,20 @@ module FastestRouteCase =
     *)
 
     (*
-        TODO : This is is the section where the experiment should run. Make a random number generator
+        TODO : This is is the section where the experiment should run.
     *)
     let run =
         let actionMap = Map.ofList [ (0, [4;]); (1, [3; 5;]); (2, [3;]); (3, [1; 2; 4]); (4, [3; 5;]); (5, [1; 4;]); ]
         let getActions = getAvailableActions actionMap
         let random = new System.Random()
+        let alpha = 0.5
+        let gamma = 1.0
+        let epsilon = 1.0
+
+        let rec teach alpha gamma epsilon counter Q previousState previousAction currentState currentAction =
+            let isDone = isWinningState currentState
+            isDone
+
 
         (*
             TODO : Either do the rest in a loop or in a recursive function
