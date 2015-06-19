@@ -51,21 +51,21 @@ module Engine =
         Function signature:
         doAction            := ((State -> Action -> string list) -> (State -> Action list) -> (State -> bool) -> (State -> float) -> (Agent -> Agent) -> State -> Action -> (State * Action list)
     *)
-    let doAction performAction getPossipleActions isWinningState rewardFunction getNextAgent state action = 
-        let newWorld = performAction state action
-        let won = isWinningState newWorld
+    let doAction performAction getPossipleActions (isWinningState : State -> bool) rewardFunction getNextAgent state action = 
+        let newState = performAction state action
+        let won = isWinningState newState
 
         let reward = rewardFunction won state
         let nextAgent = getNextAgent state.agent
-        let newState = {
-            world = newWorld;
+        let resState = {
+            world = newState.world;
             reward = reward;
             agent = nextAgent
         }
 
         let possipleActions = getPossipleActions state
 
-        (newState, possipleActions)
+        (resState, possipleActions)
 
     (*
         Note: Single agent Q-learning
@@ -83,12 +83,14 @@ module Engine =
         This is the function that does the learning step. It computes the reward for a given state action pair and returns it for the user to save.
     *)
     let doLearningStep alpha gamma lookup isDone previousState previousAction currentState currentAction =
-        let qsa = lookup previousState previousAction
+        let _, _, qsa = lookup previousState previousAction
 
         let qsap =
             match isDone with
             | true -> 0.0
-            | false -> lookup currentState currentAction
+            | false -> 
+                let _, _, reward = lookup currentState currentAction
+                reward
 
         let newQsa = qsa + alpha * ((currentState.reward + gamma) * (qsap - qsa))
 
@@ -97,12 +99,14 @@ module Engine =
     (*
         Finds the action which gives the best expected reward
     *)
-    let rec getActionGreedy lookup currentState actions bestActionSoFar =
-        let currentBest = lookup (currentState, bestActionSoFar)
+    let rec getActionGreedy (lookup : State -> Action -> State * Action * float) currentState actions bestActionSoFar =
+        let currentBest = lookup currentState bestActionSoFar
         match actions with
-        | [] -> currentBest
+        | [] ->
+            let _, result, _ = currentBest
+            result
         | hd::tl ->
-            let currentActionValue = lookup (currentState, hd)
+            let currentActionValue = lookup currentState hd
             match currentActionValue with
             | x when x > currentBest -> getActionGreedy lookup currentState tl hd
             | _ -> getActionGreedy lookup currentState tl bestActionSoFar
@@ -116,7 +120,7 @@ module Engine =
     (*
         Either finds the action with the best expected payoff or a random action.
     *)
-    let getActionEGreedy (random : System.Random) lookup (actions : Action list) epsilon currentState =
+    let getActionEGreedy (random : System.Random) (lookup : State -> Action -> State * Action * float) (actions : Action list) epsilon currentState : Option<Action> =
         match actions with
         | [] -> None
         | car::cdr ->

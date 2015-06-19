@@ -13,10 +13,13 @@ module FastestRouteCase =
 
     let getNextAgent (agent : Agent) = agent
 
-    let performAction (state : State) (action : Action) = 
-        replaceAt initialWorld state.agent.id action.value
+    let performAction (state : State) (action : Action) = {
+        world = replaceAt initialWorld state.agent.id action.value;
+        reward = state.reward;
+        agent = state.agent
+    }
 
-    let reward won (state : State) = 
+    let rewardFunction won (state : State) = 
         match won with
         | true -> 100.0
         | false -> 0.0
@@ -27,11 +30,12 @@ module FastestRouteCase =
     let getAvailableActions (actionMap : Map<int, int list>) (state : State) =
         let position = findAgentPosition state
         actionMap.[position]
+        |> List.map (fun x -> { value = x; })
 
     let lookup (map : Map<(State * Action), float>) (state : State) (action : Action) =
         match map.ContainsKey((state, action)) with
-        | true -> map.[(state, action)]
-        | false -> 0.0
+        | true -> state, action, map.[(state, action)]
+        | false -> state, action, 0.0
 
     let isWinningState (state : State) =
         let pos = findAgentPosition state
@@ -53,17 +57,44 @@ module FastestRouteCase =
         let alpha = 0.5
         let gamma = 1.0
         let epsilon = 1.0
+        let counter = 1
+        let startState = performAction initialState { value = 2; }
 
-        let rec teach alpha gamma epsilon counter Q previousState previousAction currentState currentAction =
+        (*
+            TODO : Perform doLearningStep even if in the winning state to update the second to last state
+        *)
+        let rec teach alpha gamma epsilon counter (Q : Map<(State * Action), float>) history currentState : Map<(State * Action), float> =
             let isDone = isWinningState currentState
-            isDone
+            
+            match isDone with
+            | true -> Q
+            | false ->
+                let lookupFunction = lookup Q
+                let action = 
+                    let option = getActionEGreedy random lookupFunction (getActions currentState) epsilon currentState
+                    match option with
+                    | None -> failwith "No action was found"
+                    | Some(x) -> x
+
+                let reward, newQ = 
+                    match history with
+                    | [] -> 0.0, Q
+                    | hd::tl ->
+                        let prevState, prevAction = hd
+                        let _, _, re = doLearningStep alpha gamma lookupFunction isDone prevState prevAction currentState action
+                        let nq = Q.Add ((prevState, prevAction), re)
+                        re, nq
+
+                let newHistory = (currentState, action) :: history
+                let newState, _ = doAction performAction getActions isWinningState rewardFunction getNextAgent currentState action
+
+                teach alpha gamma epsilon counter newQ newHistory newState
 
 
         (*
             TODO : Either do the rest in a loop or in a recursive function
         *)
-        let Q : Map<(State * Action), float> = Map.empty
-        printfn "%A" Q
+        printfn "%A" (teach alpha gamma epsilon counter Map.empty [] startState)
 
 
 open System
