@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Engine.fs" />
-    <Compile Include="FastestRouteCase.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

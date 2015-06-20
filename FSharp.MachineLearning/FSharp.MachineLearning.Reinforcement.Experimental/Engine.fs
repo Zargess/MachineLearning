@@ -54,7 +54,6 @@ module Engine =
     let doAction performAction getPossipleActions (isWinningState : State -> bool) rewardFunction getNextAgent state action = 
         let newState = performAction state action
         let won = isWinningState newState
-
         let reward = rewardFunction won state
         let nextAgent = getNextAgent state.agent
         let resState = {
@@ -92,23 +91,24 @@ module Engine =
                 let _, _, reward = lookup currentState currentAction
                 reward
 
-        let newQsa = qsa + alpha * ((currentState.reward + gamma) * (qsap - qsa))
-
+        let newQsa = qsa + alpha * (currentState.reward + gamma * qsap - qsa)
+        (*
+        if isDone then
+            printfn "%A" newQsa
+        *)
         (previousState, previousAction, newQsa)
 
     (*
         Finds the action which gives the best expected reward
     *)
     let rec getActionGreedy (lookup : State -> Action -> State * Action * float) currentState actions bestActionSoFar =
-        let currentBest = lookup currentState bestActionSoFar
+        let _, currentBestAction, currentBestValue = lookup currentState bestActionSoFar
         match actions with
-        | [] ->
-            let _, result, _ = currentBest
-            result
+        | [] -> currentBestAction
         | hd::tl ->
             let currentActionValue = lookup currentState hd
             match currentActionValue with
-            | x when x > currentBest -> getActionGreedy lookup currentState tl hd
+            | _, _, x when x > currentBestValue -> getActionGreedy lookup currentState tl hd
             | _ -> getActionGreedy lookup currentState tl bestActionSoFar
 
     (*
@@ -129,6 +129,36 @@ module Engine =
             | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
             | _ -> Some(getRandomAction random actions)
 
-    (*
-        TODO : Consider making the general learning run a general function here
-    *)
+    let rec learn isWinningState getActions performAction rewardFunction getNextAgent roundsLeft alpha gamma counter neutrualAction lookup Q getRandomStartState random calcEpsilon =
+        let rec teach alpha gamma epsilon neutrualAction lookup (Q : Map<(State * Action), float>) history currentState =
+            let isDone = isWinningState currentState
+            let lookupFunction = lookup Q
+            let action = 
+                let foundAction = getActionEGreedy random lookupFunction (getActions currentState) epsilon currentState
+                match foundAction with
+                | None -> neutrualAction
+                | Some(x) -> x
+            let reward, newQ = 
+                match history with
+                | [] -> 0.0, (Q.Add ((currentState, action), 0.0))
+                | hd::tl ->
+                    let prevState, prevAction = hd
+                    let _, _, re = doLearningStep alpha gamma lookupFunction isDone prevState prevAction currentState action
+                    let nq = Q.Add ((prevState, prevAction), re)
+                    re, nq
+            match isDone with
+            | true -> newQ
+            | false -> 
+                let newHistory = (currentState, action) :: history
+                let newState, _ = doAction performAction getActions isWinningState rewardFunction getNextAgent currentState action
+                teach alpha gamma epsilon neutrualAction lookup newQ newHistory newState
+
+        match roundsLeft with
+        | 0 -> Q
+        | x when x > 0 ->
+            let startState = getRandomStartState random
+            let newCounter = counter + 1.0
+            let epsilon = calcEpsilon newCounter
+            let newQ = teach alpha gamma epsilon neutrualAction lookup Q [] startState
+            learn isWinningState getActions performAction rewardFunction getNextAgent (roundsLeft - 1) alpha gamma newCounter neutrualAction lookup newQ getRandomStartState random calcEpsilon
+        | _ -> failwith "cannot handle negative rounds left"
