@@ -162,3 +162,14 @@ module Engine =
             let newQ = teach alpha gamma epsilon neutrualAction lookup Q [] startState
             learn isWinningState getActions performAction rewardFunction getNextAgent (roundsLeft - 1) alpha gamma newCounter neutrualAction lookup newQ getRandomStartState random calcEpsilon
         | _ -> failwith "cannot handle negative rounds left"
+
+
+    let rec findActionWithBestReward (Q : Map<(State * Action), float>) currentState actions bestSoFar =
+        match actions with
+        | [] -> bestSoFar
+        | hd::tl ->
+            let bestRewardSoFar = Q.[(currentState, bestSoFar)]
+            let headReward = Q.[(currentState, hd)]
+            match headReward with
+            | x when x > bestRewardSoFar -> findActionWithBestReward Q currentState tl hd
+            | _ -> findActionWithBestReward Q currentState tl bestSoFar
