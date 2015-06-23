@@ -104,6 +104,64 @@ module FastestRouteCase =
         inputFromUser false
 
 
+module TicTacToe =
+    let winningTuples = [ (0,1,2); (3,4,5); (6,7,8); (0,3,6); (1,4,7); (2,5,8); (0,4,8); (2,4,6); ]
+    let initialState = {
+        world = [ ""; ""; ""; ""; ""; ""; ""; ""; ""; ];
+        reward = 0.0;
+        agent = { id="x" }
+    }
+
+    let neutrualAction = {
+        value = -1
+    }
+
+    let getNextAgent agent = agent
+
+    let isWinningState state =
+        let id = state.agent.id
+        let rec checkWorld id (world : string list) winningTuples =
+            match winningTuples with
+            | [] -> false
+            | hd::tl ->
+                let x,y,z = hd
+                let won = world.[x] = id && world.[y] = id && world.[z] = id
+                match won with
+                | true -> won
+                | false -> checkWorld id world tl
+        checkWorld id state.world winningTuples
+
+    let rewardFunction won state =
+        match won with
+        | true -> 100.0
+        | false -> 0.0
+
+    let random = new System.Random()
+
+    let getAvailableActions state = 
+        findAllIndicies (fun x -> x = state.agent.id) state.world [] 0
+        |> List.map (fun x -> { value = x })
+
+    (* TODO : Fix the usage of rewardFunction in this function *)
+    let performAction (state : State) (action : Action) = 
+        let tempState = {
+            world = replaceAt state.world state.agent.id action.value;
+            reward = rewardFunction (isWinningState state) state;
+            agent = state.agent
+        }
+        let actions = getAvailableActions tempState
+        let randAction = getRandomAction random actions
+        match randAction with
+        | None -> tempState
+        | Some(x) -> { world = replaceAt tempState.world "o" x.value; reward = rewardFunction (isWinningState state) state; agent = state.agent }
+
+    let lookup (map : Map<(State * Action), float>) (state : State) (action : Action) =
+        match map.ContainsKey((state, action)) with
+        | true -> state, action, map.[(state, action)]
+        | false -> state, action, 0.0
+
+    let calcEpsilon x = -0.0001 * x + 1.0
+
 [<EntryPoint>]
 let main argv = 
     FastestRouteCase.run |> ignore

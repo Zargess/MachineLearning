@@ -27,6 +27,14 @@ module Engine =
         | car::cdr when index = 0 -> value :: cdr
         | _ -> failwith "One or more errors occurred!"
 
+    let rec findAllIndicies func list indicies counter =
+        match list with
+        | [] -> indicies
+        | hd::tl ->
+            match hd with
+            | x when func hd -> findAllIndicies func tl (counter::indicies) (counter + 1)
+            | _ -> findAllIndicies func tl indicies (counter + 1)
+
     (*
         This function returns the current possition of an agent in the world.
         It needs the current state of the game.
@@ -114,8 +122,10 @@ module Engine =
     (*
         Finds a random action
     *)
-    let getRandomAction (random : System.Random) (actions : Action list) =
-        actions.[random.Next(0, actions.Length)]
+    let getRandomAction (random : System.Random) (actions : Action list) = 
+        match actions with
+        | [] -> None
+        | _ -> Some(actions.[random.Next(0, actions.Length)])
     
     (*
         Either finds the action with the best expected payoff or a random action.
@@ -127,7 +137,7 @@ module Engine =
             let randomNumber = random.NextDouble()
             match randomNumber with
             | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
-            | _ -> Some(getRandomAction random actions)
+            | _ -> getRandomAction random actions
 
     let rec learn isWinningState getActions performAction rewardFunction getNextAgent roundsLeft alpha gamma counter neutrualAction lookup Q getRandomStartState random calcEpsilon =
         let rec teach alpha gamma epsilon neutrualAction lookup (Q : Map<(State * Action), float>) history currentState =
