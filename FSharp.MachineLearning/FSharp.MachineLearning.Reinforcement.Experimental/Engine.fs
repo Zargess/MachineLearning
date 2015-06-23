@@ -1,7 +1,7 @@
 ﻿namespace FSharp.MachineLearning.Reinforcement.Experimental
 
 module Engine =
-
+    (* TODO : Use generic types in id, value and world *)
     type Agent = {
         id : string
     }
