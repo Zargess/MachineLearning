@@ -100,10 +100,6 @@ module Engine =
                 reward
 
         let newQsa = qsa + alpha * (currentState.reward + gamma * qsap - qsa)
-        (*
-        if isDone then
-            printfn "%A" newQsa
-        *)
         (previousState, previousAction, newQsa)
 
     (*
