@@ -49,7 +49,7 @@ module FastestRouteCase =
         }
         performAction initialState action
 
-    let run =
+    let run () =
         let actionMap = Map.ofList [ (0, [4;]); (1, [3; 5;]); (2, [3;]); (3, [1; 2; 4]); (4, [0; 3; 5;]); (5, [1; 4;]); ]
         let getActions = getAvailableActions actionMap
         let random = new System.Random()
@@ -139,21 +139,24 @@ module TicTacToe =
     let random = new System.Random()
 
     let getAvailableActions state = 
-        findAllIndicies (fun x -> x = state.agent.id) state.world [] 0
+        findAllIndicies (fun x -> x = "") state.world [] 0
         |> List.map (fun x -> { value = x })
 
     (* TODO : Fix the usage of rewardFunction in this function *)
-    let performAction (state : State) (action : Action) = 
-        let tempState = {
-            world = replaceAt state.world state.agent.id action.value;
-            reward = rewardFunction (isWinningState state) state;
-            agent = state.agent
-        }
-        let actions = getAvailableActions tempState
-        let randAction = getRandomAction random actions
-        match randAction with
-        | None -> tempState
-        | Some(x) -> { world = replaceAt tempState.world "o" x.value; reward = rewardFunction (isWinningState state) state; agent = state.agent }
+    let performAction (state : State) (action : Action) =
+        match action.value with
+        | x when x < 0 -> state
+        | _ ->
+            let tempState = {
+                world = replaceAt state.world state.agent.id action.value;
+                reward = rewardFunction (isWinningState state) state;
+                agent = state.agent
+            }
+            let actions = getAvailableActions tempState
+            let randAction = getRandomAction random actions
+            match randAction with
+            | None -> tempState
+            | Some(x) -> { world = replaceAt tempState.world "o" x.value; reward = rewardFunction (isWinningState state) state; agent = state.agent }
 
     let lookup (map : Map<(State * Action), float>) (state : State) (action : Action) =
         match map.ContainsKey((state, action)) with
@@ -162,7 +165,22 @@ module TicTacToe =
 
     let calcEpsilon x = -0.0001 * x + 1.0
 
-[<EntryPoint>]
-let main argv = 
-    FastestRouteCase.run |> ignore
-    0 // return an integer exit code
+    let getRandomStartState random = initialState
+
+    let run () =
+        let alpha = 0.5
+        let gamma = 1.0
+
+        let Q = learn isWinningState getAvailableActions performAction rewardFunction getNextAgent 3 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
+        Q
+
+do
+    printfn "%s" "Starting"
+    
+    let Q = TicTacToe.run ()
+    let pairs = Map.filter (fun key value -> value > 0.0) Q
+    for p in pairs do
+        printfn "%O" "--------------------------------------------------------------"
+        printfn "%A" p.Key
+        printfn "%A" p.Value
+    System.Console.ReadLine() |> ignore

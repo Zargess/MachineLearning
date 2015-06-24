@@ -1,4 +1,3 @@
-C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\obj\Debug\MachineLearningTest.fsprojResolveAssemblyReference.cache
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\bin\Debug\MachineLearningTest.exe.config
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\bin\Debug\MachineLearningTest.XML
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\bin\Debug\MachineLearningTest.exe
@@ -8,5 +7,6 @@ C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineL
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\bin\Debug\FSharp.MachineLearning.Reinforcement.Experimental.pdb
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\bin\Debug\FSharp.MachineLearning.Reinforcement.Experimental.xml
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\bin\Debug\FSharp.Core.xml
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\obj\Debug\MachineLearningTest.fsprojResolveAssemblyReference.cache
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\obj\Debug\MachineLearningTest.exe
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\MachineLearningTest\obj\Debug\MachineLearningTest.pdb

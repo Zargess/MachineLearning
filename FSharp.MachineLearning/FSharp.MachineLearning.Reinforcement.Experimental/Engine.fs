@@ -136,6 +136,7 @@ module Engine =
             | _ -> getRandomAction random actions
 
     let rec learn isWinningState getActions performAction rewardFunction getNextAgent roundsLeft alpha gamma counter neutrualAction lookup Q getRandomStartState random calcEpsilon =
+        (* TODO : This function is using isWinningState but should use a isEndState *)
         let rec teach alpha gamma epsilon neutrualAction lookup (Q : Map<(State * Action), float>) history currentState =
             let isDone = isWinningState currentState
             let lookupFunction = lookup Q
