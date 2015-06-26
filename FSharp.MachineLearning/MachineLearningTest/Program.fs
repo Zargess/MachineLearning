@@ -57,7 +57,7 @@ module FastestRouteCase =
         let gamma = 1.0
         let startState = performAction initialState { value = 3; }
 
-        let Q = learn isWinningState getActions performAction rewardFunction getNextAgent 100 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
+        let Q = learn isWinningState isWinningState getActions performAction rewardFunction getNextAgent 100 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
 
         let validInput (input : string) =
             try
@@ -131,6 +131,16 @@ module TicTacToe =
                 | false -> checkWorld id world tl
         checkWorld id state.world winningTuples
 
+    let isEndState state =
+        let freeSpaces =
+            List.filter (fun x -> x = "") state.world
+            |> List.length
+
+        let isFull = freeSpaces = 0
+        let won = isWinningState state
+
+        isFull || won
+
     let rewardFunction won state =
         match won with
         | true -> 100.0
@@ -171,7 +181,7 @@ module TicTacToe =
         let alpha = 0.5
         let gamma = 1.0
 
-        let Q = learn isWinningState getAvailableActions performAction rewardFunction getNextAgent 3 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
+        let Q = learn isWinningState isEndState getAvailableActions performAction rewardFunction getNextAgent 500 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
         Q
 
 do

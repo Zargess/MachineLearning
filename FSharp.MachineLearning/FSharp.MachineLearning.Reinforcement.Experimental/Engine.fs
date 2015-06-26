@@ -135,10 +135,9 @@ module Engine =
             | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
             | _ -> getRandomAction random actions
 
-    let rec learn isWinningState getActions performAction rewardFunction getNextAgent roundsLeft alpha gamma counter neutrualAction lookup Q getRandomStartState random calcEpsilon =
-        (* TODO : This function is using isWinningState but should use a isEndState *)
+    let rec learn isWinningState isEndState getActions performAction rewardFunction getNextAgent roundsLeft alpha gamma counter neutrualAction lookup Q getRandomStartState random calcEpsilon =
         let rec teach alpha gamma epsilon neutrualAction lookup (Q : Map<(State * Action), float>) history currentState =
-            let isDone = isWinningState currentState
+            let isDone = isEndState currentState
             let lookupFunction = lookup Q
             let action = 
                 let foundAction = getActionEGreedy random lookupFunction (getActions currentState) epsilon currentState
@@ -167,7 +166,7 @@ module Engine =
             let newCounter = counter + 1.0
             let epsilon = calcEpsilon newCounter
             let newQ = teach alpha gamma epsilon neutrualAction lookup Q [] startState
-            learn isWinningState getActions performAction rewardFunction getNextAgent (roundsLeft - 1) alpha gamma newCounter neutrualAction lookup newQ getRandomStartState random calcEpsilon
+            learn isWinningState isEndState getActions performAction rewardFunction getNextAgent (roundsLeft - 1) alpha gamma newCounter neutrualAction lookup newQ getRandomStartState random calcEpsilon
         | _ -> failwith "cannot handle negative rounds left"
 
 
