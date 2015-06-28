@@ -169,7 +169,7 @@ module Engine =
             learn isWinningState isEndState getActions performAction rewardFunction getNextAgent (roundsLeft - 1) alpha gamma newCounter neutrualAction lookup newQ getRandomStartState random calcEpsilon
         | _ -> failwith "cannot handle negative rounds left"
 
-
+    (* TODO : Use lookup function here instead *)
     let rec findActionWithBestReward (Q : Map<(State * Action), float>) currentState actions bestSoFar =
         match actions with
         | [] -> bestSoFar
