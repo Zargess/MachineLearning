@@ -638,7 +638,6 @@
  <param name="array">The input array.</param>
  <returns>The result array.</returns>
  <exception cref="System.ArgumentNullException">Thrown when the input array is null.</exception>
- <exception cref="System.ArgumentException">Thrown when the count is negative.</exception>
 </member>
 <member name="M:Microsoft.FSharp.Collections.ArrayModule.ToSeq``1(``0[])">
  <summary>Views the given array as a sequence.</summary>
@@ -1721,7 +1720,6 @@
  <param name="count">The maximum number of items to return.</param>
  <param name="array">The input list.</param>
  <returns>The result list.</returns>
- <exception cref="System.ArgumentException">Thrown when the count is negative.</exception>
 </member>
 <member name="M:Microsoft.FSharp.Collections.ListModule.TryHead``1(Microsoft.FSharp.Collections.FSharpList{``0})">
  <summary>Returns the first element of the list, or
@@ -6592,9 +6590,6 @@
  <remarks>This is a direct, checked conversion for all 
  primitive numeric types. For strings, the input is converted using <c>Byte.Parse()</c> on strings and otherwise requires a <c>ToByte</c> method on the input type.</remarks>
 </member>
-<member name="T:Microsoft.FSharp.Core.LanguagePrimitives.ErrorStrings">
- <summary>For compiler use only</summary>
-</member>
 <member name="M:Microsoft.FSharp.Core.LanguagePrimitives.DivideByInt``1(``0,System.Int32)">
  <summary>Divides a value by an integer.</summary>
  <param name="x">The input value.</param>
@@ -7003,6 +6998,9 @@
 </member>
 <member name="T:Microsoft.FSharp.Core.LanguagePrimitives.IntrinsicOperators">
  <summary>The F# compiler emits calls to some of the functions in this module as part of the compiled form of some language constructs</summary>
+</member>
+<member name="T:Microsoft.FSharp.Core.LanguagePrimitives.ErrorStrings">
+ <summary>For compiler use only</summary>
 </member>
 <member name="T:Microsoft.FSharp.Core.LanguagePrimitives">
  <summary>Language primitives associated with the F# language</summary>
