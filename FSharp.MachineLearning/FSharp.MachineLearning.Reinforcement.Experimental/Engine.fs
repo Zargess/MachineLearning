@@ -16,24 +16,18 @@ module Engine =
         agent : Agent
     }
 
-    (*
-        This function replaces a given element at the given index in a list with a new value
-    *)
-    let rec replaceAt list value index =
-        match list with
-        | [] when index = 0 -> [ value; ]
-        | [] when index > 0 -> failwith "Index bigger than list size!"
-        | car::cdr when index > 0 -> car :: replaceAt cdr value (index - 1)
-        | car::cdr when index = 0 -> value :: cdr
-        | _ -> failwith "One or more errors occurred!"
-
-    let rec findAllIndicies func list indicies counter =
-        match list with
-        | [] -> indicies
-        | hd::tl ->
-            match hd with
-            | x when func hd -> findAllIndicies func tl (counter::indicies) (counter + 1)
-            | _ -> findAllIndicies func tl indicies (counter + 1)
+    type GameConfiguration = {
+        isWinningState : State -> bool;
+        isEndState : State -> bool;
+        isLoosingState : State -> bool;
+        getActions : State -> Action list;
+        performAction : State -> Action -> State;
+        rewardFunction : bool -> bool -> float;
+        getRandomStartState : unit -> Action
+        neutrualAction : Action;
+        alpha : float;
+        gamma : float
+    }
 
     (*
         This function returns the current possition of an agent in the world.
