@@ -129,6 +129,8 @@ module Engine =
             | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
             | _ -> getRandomAction random actions
 
+    (* TODO : Rewrite this code to make it simpler *)
+    (* TODO : Do not use the getRandomStartState as this results in the VI not learning the best start state. Use the standard way to get an E-greedy action instead, or choose a random action. *)
     let rec learn isWinningState isEndState getActions performAction rewardFunction getNextAgent roundsLeft alpha gamma counter neutrualAction lookup Q getRandomStartState random calcEpsilon =
         let rec teach alpha gamma epsilon neutrualAction lookup (Q : Map<(State * Action), float>) history currentState =
             let isDone = isEndState currentState
@@ -164,6 +166,7 @@ module Engine =
         | _ -> failwith "cannot handle negative rounds left"
 
     (* TODO : Use lookup function here instead *)
+    (* TODO : Consider using getActionGreedy instead *)
     let rec findActionWithBestReward (Q : Map<(State * Action), float>) currentState actions bestSoFar =
         match actions with
         | [] -> bestSoFar
