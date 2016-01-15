@@ -52,7 +52,9 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="ListExtension.fs" />
-    <Compile Include="Engine.fs" />
+    <Compile Include="Types.fs" />
+    <Compile Include="QLearning.fsi" />
+    <Compile Include="QLearning.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

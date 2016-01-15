@@ -1,6 +1,6 @@
 ﻿namespace MachineLearningTestCases
 
-open FSharp.MachineLearning.Reinforcement.Experimental.Engine
+open Zargess.MachineLearning.ReinforcementLearning
 
 module FastestRoute =
     let initialWorld = [""; ""; ""; ""; ""; "";]
@@ -27,7 +27,7 @@ module FastestRoute =
         | false -> 0.0
 
     let getAvailableActions (actionMap : Map<int, int list>) (state : State) =
-        let position = findAgentPosition state
+        let position = Utility.findAgentPosition state
         actionMap.[position]
         |> List.map (fun x -> { value = x; })
 
