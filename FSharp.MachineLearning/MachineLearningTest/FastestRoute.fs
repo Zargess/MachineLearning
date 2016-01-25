@@ -21,8 +21,14 @@ module FastestRoute =
         agent = state.agent
     }
 
-    let rewardFunction won (state : State) = 
-        match won with
+    let isWinningState (state : State) =
+        let pos = Utility.findAgentPosition state
+        match pos with
+        | 5 -> true
+        | _ -> false
+
+    let rewardFunction (state : State) = 
+        match isWinningState state with
         | true -> 100.0
         | false -> 0.0
 
@@ -32,16 +38,10 @@ module FastestRoute =
         |> List.map (fun x -> { value = x; })
 
     (* TODO : Consider rewriting this so it does not return a 3 tuple *)
-    let lookup (map : Map<(State * Action), float>) (state : State) (action : Action) =
+    let lookupFunction (map : Map<(State * Action), float>) (state : State) (action : Action) =
         match map.ContainsKey((state, action)) with
-        | true -> state, action, map.[(state, action)]
-        | false -> state, action, 0.0
-
-    let isWinningState (state : State) =
-        let pos = findAgentPosition state
-        match pos with
-        | 5 -> true
-        | _ -> false
+        | true -> map.[(state, action)]
+        | false -> 0.0
 
     let calcEpsilon x = -0.0001 * x + 1.0
 
@@ -50,6 +50,8 @@ module FastestRoute =
             value = random.Next(0, 6)
         }
         performAction initialState action
+    
+    let isEndState (state : State) = isWinningState state
 
     let run () =
         let actionMap = Map.ofList [ (0, [4;]); (1, [3; 5;]); (2, [3;]); (3, [1; 2; 4]); (4, [0; 3; 5;]); (5, [1; 4;]); ]
@@ -59,7 +61,27 @@ module FastestRoute =
         let gamma = 1.0
         let startState = performAction initialState { value = 3; }
 
-        let Q = learn isWinningState isWinningState getActions performAction rewardFunction getNextAgent 100 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
+        let getStartState () = getRandomStartState random
+
+        let gameconfig : GameConfiguration = {
+            isWinningState = isWinningState;
+            isEndState = isEndState;
+            getActions = getActions;
+            performAction = performAction;
+            rewardFunction = rewardFunction;
+            lookupFunction = lookupFunction;
+            calcEpsilon = calcEpsilon;
+            getNextAgent = getNextAgent;
+            random = random;
+            neutrualAction = neutrualAction;
+            getStartState = getStartState;
+            alpha = alpha;
+            gamma = gamma
+        }
+
+        let Q = QLearning.learn gameconfig Map.empty 0.0 5000
+
+        let lookup = lookupFunction Q
 
         let validInput (input : string) =
             try
@@ -76,7 +98,7 @@ module FastestRoute =
                 let action =    
                     match actions with 
                     | [] -> failwith "No actions available"
-                    | hd::tl -> findActionWithBestReward Q currentState tl hd
+                    | hd::tl -> QLearning.getActionGreedy lookup currentState tl hd
                 let nextState = performAction currentState action
                 findWayOut Q nextState newRoute
 
@@ -97,11 +119,11 @@ module FastestRoute =
                         performAction initialState action
                     let route = List.rev (findWayOut Q startState [])
                     for state in route do
-                        printf "%O" (findAgentPosition state)
+                        printf "%O" (Utility.findAgentPosition state)
                         printf "%O" "->"
                     printf "%O" "end\n"
                     inputFromUser false
                 | _ -> inputFromUser false
 
-        inputFromUser false
+//        inputFromUser false
         Q

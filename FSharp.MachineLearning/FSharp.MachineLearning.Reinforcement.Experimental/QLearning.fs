@@ -120,10 +120,11 @@ module QLearning =
         match roundsLeft with
         | 0 -> Q
         | x when x > 0 ->
-            let startState = gc.startState
+            let startState = gc.getStartState()
             let newCounter = counter + 1.0
             let epsilon = gc.calcEpsilon newCounter
             let newQ = teach gc.alpha gc.gamma epsilon gc.neutrualAction gc.lookupFunction Q [] startState
+            printfn "%O" x
             learn gc newQ newCounter (roundsLeft - 1)
         | _ -> failwith "cannot handle negative rounds left"
 

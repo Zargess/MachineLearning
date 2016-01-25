@@ -25,7 +25,7 @@ type GameConfiguration = {
     getNextAgent : Agent -> Agent;
     random : System.Random;
     neutrualAction : Action;
-    startState : State;
+    getStartState : unit -> State;
     alpha : float;
     gamma : float
 }
