@@ -18,7 +18,7 @@ module QLearning =
     let doAction performAction getPossipleActions (isWinningState : State -> bool) rewardFunction getNextAgent state action = 
         let newState = performAction state action
         let won = isWinningState newState
-        let reward = rewardFunction state
+        let reward = rewardFunction newState
         let nextAgent = getNextAgent state.agent
         let resState = {
             world = newState.world;
@@ -91,52 +91,39 @@ module QLearning =
             | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
             | _ -> getRandomAction random actions
 
-    (* TODO : Rewrite this code to make it simpler *)
-    (* TODO : Do not use the getRandomStartState as this results in the VI not learning the best start state. Use the standard way to get an E-greedy action instead, or choose a random action. *)
-    let rec learn (gc : GameConfiguration) (Q : Map<(State * Action), float>) (counter : float) (roundsLeft : int) =
-        let rec teach alpha gamma epsilon neutrualAction lookup (Q : Map<(State * Action), float>) history currentState =
-            let isDone = gc.isEndState currentState
-            let lookupFunction = lookup Q
-            let action = 
-                let foundAction = getActionEGreedy gc.random lookupFunction (gc.getActions currentState) epsilon currentState
-                match foundAction with
-                | None -> neutrualAction
-                | Some(x) -> x
-            let reward, newQ = 
-                match history with
-                | [] -> 0.0, (Q.Add ((currentState, action), 0.0))
-                | hd::tl ->
-                    let prevState, prevAction = hd
-                    let _, _, re = doLearningStep alpha gamma lookupFunction isDone prevState prevAction currentState action
-                    let nq = Q.Add ((prevState, prevAction), re)
-                    re, nq
-            match isDone with
-            | true -> newQ
-            | false -> 
-                let newHistory = (currentState, action) :: history
-                let newState, _ = doAction gc.performAction gc.getActions gc.isWinningState gc.rewardFunction gc.getNextAgent currentState action
-                teach alpha gamma epsilon neutrualAction lookup newQ newHistory newState
+    let rec playOneRound (gc : GameConfiguration) (Q : Map<(State * Action), float>) epsilon history currentState =
+        let isDone = gc.isEndState currentState
+        let lookup = gc.lookupFunction Q
+        let action =
+            let foundAction = getActionEGreedy gc.random lookup (gc.getActions currentState) epsilon currentState
+            match foundAction with
+            | None -> gc.neutrualAction
+            | Some(x) -> x
+        
+        let reward, newQ =
+            match history with
+            | [] -> 0.0, (Q.Add ((currentState, action), 0.0))
+            | hd::tl ->
+                let prevState, prevAction = hd
+                let _,_, re = doLearningStep gc.alpha gc.gamma lookup isDone prevState prevAction currentState action
+                let nq = Q.Add ((prevState, prevAction), re)
+                re, nq
 
+        match isDone with
+        | true -> newQ
+        | false ->
+            let newHistory = (currentState, action) :: history
+            let newState, _ = doAction gc.performAction gc.getActions gc.isWinningState gc.rewardFunction gc.getNextAgent currentState action
+            playOneRound gc newQ epsilon newHistory newState
+
+
+    let rec learn (gc : GameConfiguration) (Q : Map<(State * Action), float>) (counter : float) (roundsLeft : int) =
         match roundsLeft with
         | 0 -> Q
         | x when x > 0 ->
             let startState = gc.getStartState()
             let newCounter = counter + 1.0
             let epsilon = gc.calcEpsilon newCounter
-            let newQ = teach gc.alpha gc.gamma epsilon gc.neutrualAction gc.lookupFunction Q [] startState
-            printfn "%O" x
+            let newQ = playOneRound gc Q epsilon [] startState
             learn gc newQ newCounter (roundsLeft - 1)
         | _ -> failwith "cannot handle negative rounds left"
-
-    (* TODO : Use lookup function here instead *)
-    (* TODO : Consider using getActionGreedy instead *)
-    let rec findActionWithBestReward (Q : Map<(State * Action), float>) currentState actions bestSoFar =
-        match actions with
-        | [] -> bestSoFar
-        | hd::tl ->
-            let bestRewardSoFar = Q.[(currentState, bestSoFar)]
-            let headReward = Q.[(currentState, hd)]
-            match headReward with
-            | x when x > bestRewardSoFar -> findActionWithBestReward Q currentState tl hd
-            | _ -> findActionWithBestReward Q currentState tl bestSoFar
-

@@ -79,7 +79,7 @@ module FastestRoute =
             gamma = gamma
         }
 
-        let Q = QLearning.learn gameconfig Map.empty 0.0 5000
+        let Q = QLearning.learn gameconfig Map.empty 0.0 50000
 
         let lookup = lookupFunction Q
 
@@ -125,5 +125,5 @@ module FastestRoute =
                     inputFromUser false
                 | _ -> inputFromUser false
 
-//        inputFromUser false
+        inputFromUser false
         Q
