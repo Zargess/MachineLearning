@@ -70,14 +70,6 @@ module QLearning =
             match currentActionValue with
             | x when x > currentBestValue -> getActionGreedy lookup currentState tl hd
             | _ -> getActionGreedy lookup currentState tl bestActionSoFar
-
-    (*
-        Finds a random action
-    *)
-    let getRandomAction (random : System.Random) (actions : Action list) = 
-        match actions with
-        | [] -> None
-        | _ -> Some(actions.[random.Next(0, actions.Length)])
     
     (*
         Either finds the action with the best expected payoff or a random action.

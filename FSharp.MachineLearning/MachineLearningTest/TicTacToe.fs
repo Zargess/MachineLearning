@@ -14,10 +14,13 @@ module TicTacToe =
         value = -1
     }
 
+    let player = { id = "o" }
+    let computer = { id = "x" }
+
     let getNextAgent agent = agent
 
-    let isWinningState state =
-        let id = state.agent.id
+    let isWinningState (player : Agent) (state : State) =
+        let id = player.id
         let rec checkWorld id (world : string list) winningTuples =
             match winningTuples with
             | [] -> false
@@ -35,20 +38,30 @@ module TicTacToe =
             |> List.length
 
         let isFull = freeSpaces = 0
-        let won = isWinningState state
+        let won = isWinningState player state
+        let lost = isWinningState computer state
 
         isFull || won
 
-    let rewardFunction won state =
-        match won with
-        | true -> 100.0
-        | false -> 0.0
+    let rewardFunction state = 
+        match (isWinningState player state, isWinningState computer state) with
+        | (true, _) -> 100.0
+        | (_, true) -> -100.0
+        | _ -> 0.0
 
     let random = new System.Random()
 
     let getAvailableActions state = 
         List.findAllIndicies (fun x -> x = "") state.world [] 0
         |> List.map (fun x -> { value = x })
+
+    (*
+        Finds a random action
+    *)
+    let getRandomAction (random : System.Random) (actions : Action list) = 
+        match actions with
+        | [] -> None
+        | _ -> Some(actions.[random.Next(0, actions.Length)])
 
     (* TODO : Fix the usage of rewardFunction in this function *)
     (* TODO : Make another version that does not perform a random action *)
@@ -58,32 +71,34 @@ module TicTacToe =
         | _ ->
             let tempState = {
                 world = List.replaceAt state.world state.agent.id action.value;
-                reward = rewardFunction (isWinningState state) state;
+                reward = rewardFunction state;
                 agent = state.agent
             }
             let actions = getAvailableActions tempState
             let randAction = getRandomAction random actions
             match randAction with
             | None -> tempState
-            | Some(x) -> { world = List.replaceAt tempState.world "o" x.value; reward = rewardFunction (isWinningState state) state; agent = state.agent }
+            | Some(x) -> { world = List.replaceAt tempState.world "o" x.value; reward = rewardFunction state; agent = state.agent }
 
     let performAction (state : State) (action : Action) (agent : Agent) =
         match action.value with
         | x when x < 0 -> state
         | _ -> {
                 world = List.replaceAt state.world state.agent.id action.value;
-                reward = rewardFunction (isWinningState state) state;
+                reward = rewardFunction state;
                 agent = agent
             }
 
     let lookup (map : Map<(State * Action), float>) (state : State) (action : Action) =
         match map.ContainsKey((state, action)) with
-        | true -> state, action, map.[(state, action)]
-        | false -> state, action, 0.0
+        | true -> map.[(state, action)]
+        | false -> 0.0
 
     let calcEpsilon x = -0.0001 * x + 1.0
 
     let getRandomStartState random = initialState
+
+    let getStartState () = initialState
 
     let printBoard state =
         printfn "%O" "------------------"
@@ -98,16 +113,29 @@ module TicTacToe =
         let alpha = 0.5
         let gamma = 1.0
 
-        let Q = learn isWinningState isEndState getAvailableActions performActionWithRandom rewardFunction getNextAgent 500000 alpha gamma 0.0 neutrualAction lookup Map.empty getRandomStartState random calcEpsilon
+        let gameconfig : GameConfiguration = {
+            isWinningState = isWinningState;
+            isEndState = isEndState;
+            getActions = getAvailableActions;
+            performAction = performActionWithRandom;
+            rewardFunction = rewardFunction;
+            lookupFunction = lookup;
+            calcEpsilon = calcEpsilon;
+            getNextAgent = getNextAgent;
+            random = random;
+            neutrualAction = neutrualAction;
+            getStartState = getStartState;
+            alpha = alpha;
+            gamma = gamma
+        }
+
+        let Q = QLearning.learn gameconfig Map.empty 0.0 50000
 
         let validInput (input : string) =
             try
                 let s = int input
                 s < 9 && s >= 0
             with _ -> false
-
-        let player = { id = "o" }
-        let computer = { id = "x" }
 
         let rec playGame Q state ended =
             printBoard state
@@ -129,7 +157,7 @@ module TicTacToe =
                 let action =
                         match getAvailableActions state with
                         | [] -> failwith "No actions available"
-                        | hd::tl -> QLearning.getActionGreedy lookup currentState tl hd
+                        | hd::tl -> QLearning.getActionGreedy Q state tl hd
                 let newState = performAction state action player
                 playGame Q newState (isEndState newState)
 
@@ -150,9 +178,9 @@ module TicTacToe =
                         match getAvailableActions initialState with
                         | [] -> failwith "No actions available"
                         | hd::tl ->
-                            findActionWithBestReward Q initialState tl hd
+                            QLearning.getActionGreedy (lookup Q) initialState tl hd
                     let newState = performAction initialState action player
-                    playGame Q newState false |> ignore
+                    playGame (lookup Q) newState false |> ignore
                     inputFromUser false
                 | _ -> inputFromUser false
              
