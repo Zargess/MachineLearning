@@ -15,7 +15,6 @@ type State = {
 }
 
 type GameConfiguration = {
-    isWinningState : State -> bool;
     isEndState : State -> bool;
     getActions : State -> Action list;
     performAction : State -> Action -> State;
@@ -25,7 +24,7 @@ type GameConfiguration = {
     getNextAgent : Agent -> Agent;
     random : System.Random;
     neutrualAction : Action;
-    startState : State;
+    getStartState : unit -> State;
     alpha : float;
     gamma : float
 }
