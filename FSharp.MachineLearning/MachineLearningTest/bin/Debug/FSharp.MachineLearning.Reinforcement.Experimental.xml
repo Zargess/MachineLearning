@@ -2,5 +2,23 @@
 <doc>
 <assembly><name>FSharp.MachineLearning.Reinforcement.Experimental</name></assembly>
 <members>
+<member name="M:List.findAllIndicies``1(Microsoft.FSharp.Core.FSharpFunc{``0,System.Boolean},Microsoft.FSharp.Collections.FSharpList{``0},Microsoft.FSharp.Collections.FSharpList{System.Int32},System.Int32)">
+ <summary>
+ Finds all the indicies where the function returns true
+ </summary>
+ <param name="func"></param>
+ <param name="list"></param>
+ <param name="indicies"></param>
+ <param name="counter"></param>
+</member>
+<member name="M:List.replaceAt``1(Microsoft.FSharp.Collections.FSharpList{``0},``0,System.Int32)">
+ <summary>
+ Replaces the current value at the given index
+ </summary>
+ <param name="list"></param>
+ <param name="value"></param>
+ <param name="index"></param>
+ <exception cref="Index out of bounds"> Fails if index is negative or greater than the length of the list </exception>
+</member>
 </members>
 </doc>
