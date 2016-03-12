@@ -15,7 +15,6 @@ type State = {
 }
 
 type GameConfiguration = {
-    isWinningState : State -> bool;
     isEndState : State -> bool;
     getActions : State -> Action list;
     performAction : State -> Action -> State;

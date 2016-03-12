@@ -15,9 +15,8 @@ module QLearning =
         Function signature:
         doAction            := ((State -> Action -> string list) -> (State -> Action list) -> (State -> bool) -> (State -> float) -> (Agent -> Agent) -> State -> Action -> (State * Action list)
     *)
-    let doAction performAction getPossipleActions (isWinningState : State -> bool) rewardFunction getNextAgent state action = 
+    let doAction performAction getPossipleActions rewardFunction getNextAgent state action = 
         let newState = performAction state action
-        let won = isWinningState newState
         let reward = rewardFunction newState
         let nextAgent = getNextAgent state.agent
         let resState = {
@@ -70,6 +69,14 @@ module QLearning =
             match currentActionValue with
             | x when x > currentBestValue -> getActionGreedy lookup currentState tl hd
             | _ -> getActionGreedy lookup currentState tl bestActionSoFar
+
+    (*
+        Finds a random action
+    *)
+    let getRandomAction (random : System.Random) (actions : Action list) = 
+        match actions with
+        | [] -> None
+        | _ -> Some(actions.[random.Next(0, actions.Length)])
     
     (*
         Either finds the action with the best expected payoff or a random action.
@@ -105,7 +112,7 @@ module QLearning =
         | true -> newQ
         | false ->
             let newHistory = (currentState, action) :: history
-            let newState, _ = doAction gc.performAction gc.getActions gc.isWinningState gc.rewardFunction gc.getNextAgent currentState action
+            let newState, _ = doAction gc.performAction gc.getActions gc.rewardFunction gc.getNextAgent currentState action
             playOneRound gc newQ epsilon newHistory newState
 
 

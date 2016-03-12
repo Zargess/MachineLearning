@@ -38,13 +38,13 @@ module TicTacToe =
             |> List.length
 
         let isFull = freeSpaces = 0
-        let won = isWinningState player state
-        let lost = isWinningState computer state
+        let won = isWinningState computer state
+        let lost = isWinningState player state
 
         isFull || won
 
     let rewardFunction state = 
-        match (isWinningState player state, isWinningState computer state) with
+        match (isWinningState computer state, isWinningState player state) with
         | (true, _) -> 100.0
         | (_, true) -> -100.0
         | _ -> 0.0
@@ -54,14 +54,6 @@ module TicTacToe =
     let getAvailableActions state = 
         List.findAllIndicies (fun x -> x = "") state.world [] 0
         |> List.map (fun x -> { value = x })
-
-    (*
-        Finds a random action
-    *)
-    let getRandomAction (random : System.Random) (actions : Action list) = 
-        match actions with
-        | [] -> None
-        | _ -> Some(actions.[random.Next(0, actions.Length)])
 
     (* TODO : Fix the usage of rewardFunction in this function *)
     (* TODO : Make another version that does not perform a random action *)
@@ -75,7 +67,7 @@ module TicTacToe =
                 agent = state.agent
             }
             let actions = getAvailableActions tempState
-            let randAction = getRandomAction random actions
+            let randAction = QLearning.getRandomAction random actions
             match randAction with
             | None -> tempState
             | Some(x) -> { world = List.replaceAt tempState.world "o" x.value; reward = rewardFunction state; agent = state.agent }
@@ -114,7 +106,6 @@ module TicTacToe =
         let gamma = 1.0
 
         let gameconfig : GameConfiguration = {
-            isWinningState = isWinningState;
             isEndState = isEndState;
             getActions = getAvailableActions;
             performAction = performActionWithRandom;
@@ -129,7 +120,7 @@ module TicTacToe =
             gamma = gamma
         }
 
-        let Q = QLearning.learn gameconfig Map.empty 0.0 50000
+        let Q = QLearning.learn gameconfig Map.empty 0.0 500000
 
         let validInput (input : string) =
             try

@@ -64,7 +64,6 @@ module FastestRoute =
         let getStartState () = getRandomStartState random
 
         let gameconfig : GameConfiguration = {
-            isWinningState = isWinningState;
             isEndState = isEndState;
             getActions = getActions;
             performAction = performAction;
