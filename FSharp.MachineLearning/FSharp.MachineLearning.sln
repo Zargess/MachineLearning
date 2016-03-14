@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.MachineLearning.Reinforcement.Experimental", "FSharp.MachineLearning.Reinforcement.Experimental\FSharp.MachineLearning.Reinforcement.Experimental.fsproj", "{65D58390-0640-4F5C-9AE2-14E4EAC9FF44}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MachineLearningTest", "MachineLearningTest\MachineLearningTest.fsproj", "{2FBD8BB9-33F6-4599-9462-3E685AB35104}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.MachineLearning.Supervised.Experimental", "FSharp.MachineLearning.Supervised.Experimental\FSharp.MachineLearning.Supervised.Experimental.fsproj", "{751FEBFE-4FB1-4E61-91AC-7887B46C00DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2FBD8BB9-33F6-4599-9462-3E685AB35104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FBD8BB9-33F6-4599-9462-3E685AB35104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FBD8BB9-33F6-4599-9462-3E685AB35104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{751FEBFE-4FB1-4E61-91AC-7887B46C00DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{751FEBFE-4FB1-4E61-91AC-7887B46C00DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{751FEBFE-4FB1-4E61-91AC-7887B46C00DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{751FEBFE-4FB1-4E61-91AC-7887B46C00DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
