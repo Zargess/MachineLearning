@@ -1,0 +1,9 @@
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharp.MachineLearning.Supervised.Experimental.XML
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharp.MachineLearning.Supervised.Experimental.dll
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharp.MachineLearning.Supervised.Experimental.pdb
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharp.Core.dll
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharpx.Collections.dll
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharp.Core.xml
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\bin\Debug\FSharpx.Collections.xml
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\obj\Debug\FSharp.MachineLearning.Supervised.Experimental.dll
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Supervised.Experimental\obj\Debug\FSharp.MachineLearning.Supervised.Experimental.pdb

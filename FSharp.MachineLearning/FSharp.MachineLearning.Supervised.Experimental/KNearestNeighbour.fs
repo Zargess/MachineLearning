@@ -17,11 +17,11 @@ module KNearestNeighbour =
         | [] -> (label, counter)
         | (l, d)::xs when l = label -> countOccurrencesOfLabel label xs (counter + 1)
         | x::xs -> countOccurrencesOfLabel label xs counter
-
+        
     let vote data =
-        List.distinctBy (fun (l, d) -> l) data
-        |> List.map (fun (l, d) -> countOccurrencesOfLabel l data 0)
-        |> List.maxBy (fun (l, c) -> c)
+        Seq.distinctBy (fun (l, d) -> l) data
+        |> Seq.map (fun (l, d) -> countOccurrencesOfLabel l data 0)
+        |> Seq.maxBy (fun (l, c) -> c)
 
     let getNFirstElements n list =
         let rec work list n res =
