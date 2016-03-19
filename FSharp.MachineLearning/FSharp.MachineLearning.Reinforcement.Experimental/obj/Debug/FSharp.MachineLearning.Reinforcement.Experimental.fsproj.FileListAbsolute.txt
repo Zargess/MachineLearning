@@ -2,6 +2,8 @@ C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.M
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\bin\Debug\FSharp.MachineLearning.Reinforcement.Experimental.dll
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\bin\Debug\FSharp.MachineLearning.Reinforcement.Experimental.pdb
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\bin\Debug\FSharp.Core.dll
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\bin\Debug\FSharpx.Collections.dll
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\bin\Debug\FSharp.Core.xml
+C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\bin\Debug\FSharpx.Collections.xml
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\obj\Debug\FSharp.MachineLearning.Reinforcement.Experimental.dll
 C:\Users\Marcus\Documents\GitHub\MachineLearning\FSharp.MachineLearning\FSharp.MachineLearning.Reinforcement.Experimental\obj\Debug\FSharp.MachineLearning.Reinforcement.Experimental.pdb

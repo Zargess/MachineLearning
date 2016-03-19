@@ -1,4 +1,4 @@
 ﻿namespace FSharp.MachineLearning.Supervised.Experimental
 
 module KNearestNeighbour =
-    val classify<'a when 'a : equality>  : float list -> float list list -> 'a list -> int -> 'a * int
+    val classify : float list -> ('a * float list) list -> int -> 'a * int when 'a : equality
