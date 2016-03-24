@@ -1,8 +1,10 @@
 ﻿namespace MachineLearningTestCases
 
+open System.IO
+open FSharp.MachineLearning.Supervised.Experimental
+open FSharp.MachineLearning
+
 module DatingSite =
-    open System.IO
-    open FSharp.MachineLearning.Supervised.Experimental
 
     let readLines (filepath : string) = File.ReadAllLines(filepath)
 
@@ -14,39 +16,38 @@ module DatingSite =
         | [x;y;z;l] -> Some ([x;y;z], l)
         | _ -> None
 
-    let getData (list : string list) =
-        match list with
-        | DataPoint (point, label) -> (label, List.map float point)
-        | _ -> failwith "List is not of "
+    let getPoint list =
+        list
+        |> List.getNFirstElements 3
+        |> List.map float
 
-    let testClassifier k data (label, point) =
-        match KNearestNeighbour.classify point data k with
+    let loadData (path : string) =
+        path
+        |> readLines
+        |> List.ofArray
+        |> List.map (fun x -> x.Split [|'\t'|] |> List.ofArray)
+        |> List.map (fun list -> (getPoint list, List.getLastElement list))
+        |> List.fold (fun (points, labels) (point, label) -> point::points, label::labels) ([], [])
+
+    let testClassifier k data labels (point, label) =
+        match KNearestNeighbour.classify point data labels k with
         | (l, count) when l = label -> 0
         | (l, count) when l <> label -> 1
         | _ -> failwith "what the fuck?"
 
-    let mapLabel (l, point) =
+    let mapLabel l =
         match l with
-        | "1" -> ("didntLike", point)
-        | "2" -> ("smallDoses", point)
-        | "3" -> ("largeDoses", point)
-        | _   -> ("foo", point)
+        | "1" -> "didntLike"
+        | "2" -> "smallDoses"
+        | "3" -> "largeDoses"
+        | _   -> "foo"
 
     let run () =
-        let data =
-            readLines dataPath
-            |> Seq.toList
-            |> List.map (fun x -> x.Split [|'\t'|])
-            |> List.map List.ofArray
-            |> List.map getData
+        let data, labels = loadData dataPath
 
-        let test =
-            readLines testPath
-            |> Seq.toList
-            |> List.map (fun x -> x.Split [|'\t'|])
-            |> List.map List.ofArray
-            |> List.map getData
-            |> List.map mapLabel
+        let testdata, testLabels = loadData testPath
 
-        List.map (testClassifier 12 data) test
+        List.map mapLabel testLabels
+        |> List.zip testdata
+        |> List.map (testClassifier 12 data labels)
         |> List.sum
