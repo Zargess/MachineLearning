@@ -41,7 +41,7 @@ module KNearestNeighbour =
 
     let normalize dataset normalizer =
         dataset
-        |> normalizer
+        |> List.map normalizer
 
     let classify target data labels k =
         List.map (euclidean target) data

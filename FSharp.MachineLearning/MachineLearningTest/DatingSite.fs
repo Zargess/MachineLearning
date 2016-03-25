@@ -47,7 +47,11 @@ module DatingSite =
 
         let testdata, testLabels = loadData testPath
 
+        let normalizer = KNearestNeighbour.minMaxNormalizer
+        let normData = KNearestNeighbour.normalize data (normalizer data)
+        let normTestData = KNearestNeighbour.normalize testdata (normalizer testdata)
+
         List.map mapLabel testLabels
-        |> List.zip testdata
-        |> List.map (testClassifier 12 data labels)
+        |> List.zip normTestData
+        |> List.map (testClassifier 12 normData labels)
         |> List.sum
