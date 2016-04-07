@@ -1,6 +1,8 @@
 ﻿
 open MachineLearningTestCases
 
+
+
 do
     printfn "%s" "Starting"
     
@@ -12,5 +14,8 @@ do
 //        printfn "%A" p.Key
 //        printfn "%A" p.Value
 
-    printfn "%A" (DatingSite.run ())
+//    printfn "%A" (DatingSite.run ())
+    
+    printfn "%A" (Digit.run ())
+
     System.Console.ReadLine() |> ignore
