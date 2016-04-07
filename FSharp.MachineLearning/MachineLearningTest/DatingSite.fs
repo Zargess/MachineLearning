@@ -8,14 +8,9 @@ module DatingSite =
 
     let readLines (filepath : string) = File.ReadAllLines(filepath)
 
-    let dataPath = "C:\Users\Marcus\Documents\GitHub\machinelearninginaction\Ch02\datingTestSet.txt";
+    let dataPath = "C:\Users\Marcus\Documents\GitHub\machinelearninginaction\Ch02\datingTestSet.txt"
     let testPath = "C:\Users\Marcus\Documents\GitHub\machinelearninginaction\Ch02\datingTestSet2.txt"
-
-    let (|DataPoint|_|) input  =
-        match input with
-        | [x;y;z;l] -> Some ([x;y;z], l)
-        | _ -> None
-
+    
     let getPoint list =
         list
         |> List.getNFirstElements 3
