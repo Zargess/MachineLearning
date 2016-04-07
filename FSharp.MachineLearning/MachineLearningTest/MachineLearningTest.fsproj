@@ -9,10 +9,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>MachineLearningTest</RootNamespace>
     <AssemblyName>MachineLearningTest</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>MachineLearningTest</Name>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,12 +58,17 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="FastestRoute.fs" />
     <Compile Include="TicTacToe.fs" />
+    <Compile Include="DatingSite.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
-    <Compile Include="DatingSite.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FSharp.MachineLearning.Supervised.Experimental\FSharp.MachineLearning.Supervised.Experimental.fsproj">
+      <Name>FSharp.MachineLearning.Supervised.Experimental</Name>
+      <Project>{751febfe-4fb1-4e61-91ac-7887b46c00de}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="FSharp.Core">
       <HintPath>..\packages\FSharp.Core.3.0.2\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
