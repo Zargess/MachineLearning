@@ -1,7 +1,7 @@
 # MachineLearning
 <b>General machine learning library for F#</b>
 
-Currently in pre alfpha state. No working code as of yet.
+Currently in pre alfpha state. Only two algorithms completed as of yet.
 
 <b>Windows only as of now.</b>
 
