@@ -9,15 +9,26 @@ This library is intentet to include as many types of Machine Learning as possipl
 
 Current work is centered arround:
 <ul>
-  <li> Single agent reinforcement learning </li>
-  <li> Multi agent reinforcement learning </li>
+  <li> Structured machine learning algorithms </li>
+  <li> Documentation for the completed work such that others might use it </li>
 </ul>
 
-Later work will be focused arround structured Machine Learning.
-
+Completed work:
+<ul>
+  <li> Single agen Q learning algorithm </li>
+  <li> K Nearest Neighbours algorithm </li>
+</ul>
 
 Plans for the library:
 <ul>
   <li>Complete cross platform with no ties to .Net</li>
   <li>All central algorithms implemented in a general and reusable fashion</li>
+</ul>
+
+Look at the MachineLearningTest project to see examples of use.
+
+Q-learning examples:
+<ul>
+  <li>Fastest route</li>
+  <li>TicTacToe</li>
 </ul>
