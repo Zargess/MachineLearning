@@ -32,3 +32,9 @@ Q-learning examples:
   <li>Fastest route</li>
   <li>TicTacToe</li>
 </ul>
+
+K Nearest Neighbours examples:
+<ul>
+  <li>DatingSite</li>
+  <li>Digit</li>
+</ul>
