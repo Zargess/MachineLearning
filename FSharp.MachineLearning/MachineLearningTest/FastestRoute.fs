@@ -78,7 +78,7 @@ module FastestRoute =
             gamma = gamma
         }
 
-        let Q = QLearning.learn gameconfig Map.empty 0.0 50000
+        let Q = QLearning.learn gameconfig 50000
 
         let lookup = lookupFunction Q
 
@@ -97,7 +97,7 @@ module FastestRoute =
                 let action =    
                     match actions with 
                     | [] -> failwith "No actions available"
-                    | hd::tl -> QLearning.getActionGreedy lookup currentState tl hd
+                    | hd::tl -> QLearning.getActionGreedy lookup currentState actions
                 let nextState = performAction currentState action
                 findWayOut Q nextState newRoute
 

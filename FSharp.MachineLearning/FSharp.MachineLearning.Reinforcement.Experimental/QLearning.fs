@@ -57,18 +57,17 @@ module QLearning =
         let newQsa = qsa + alpha * (currentState.reward + gamma * qsap - qsa)
         (previousState, previousAction, newQsa)
 
-    (*
-        Finds the action which gives the best expected reward
-    *)
-    let rec getActionGreedy (lookup : State -> Action -> float) currentState actions bestActionSoFar =
-        let currentBestValue = lookup currentState bestActionSoFar
-        match actions with
-        | [] -> bestActionSoFar
-        | hd::tl ->
-            let currentActionValue = lookup currentState hd
-            match currentActionValue with
-            | x when x > currentBestValue -> getActionGreedy lookup currentState tl hd
-            | _ -> getActionGreedy lookup currentState tl bestActionSoFar
+    let getActionGreedy (lookup : State -> Action -> float) currentState (actions : Action list) =
+        let rec run actions bestActionSoFar =
+            let currentBestValue = lookup currentState bestActionSoFar
+            match actions with
+            | [] -> bestActionSoFar
+            | hd::tl ->
+                let currentActionValue = lookup currentState hd
+                match currentActionValue with
+                | x when x > currentBestValue -> run tl hd
+                | _ -> run tl bestActionSoFar
+        run actions.Tail actions.Head
 
     (*
         Finds a random action
@@ -87,7 +86,7 @@ module QLearning =
         | car::cdr ->
             let randomNumber = random.NextDouble()
             match randomNumber with
-            | x when x > epsilon -> Some(getActionGreedy lookup currentState cdr car)
+            | x when x > epsilon -> Some(getActionGreedy lookup currentState actions)
             | _ -> getRandomAction random actions
 
     let rec playOneRound (gc : GameConfiguration) (Q : Map<(State * Action), float>) epsilon history currentState =
@@ -115,8 +114,7 @@ module QLearning =
             let newState, _ = doAction gc.performAction gc.getActions gc.rewardFunction gc.getNextAgent currentState action
             playOneRound gc newQ epsilon newHistory newState
 
-
-    let rec learn (gc : GameConfiguration) (Q : Map<(State * Action), float>) (counter : float) (roundsLeft : int) =
+    let rec learnModel (gc : GameConfiguration) (Q : Map<(State * Action), float>) (counter : float) (roundsLeft : int) =
         match roundsLeft with
         | 0 -> Q
         | x when x > 0 ->
@@ -124,5 +122,7 @@ module QLearning =
             let newCounter = counter + 1.0
             let epsilon = gc.calcEpsilon newCounter
             let newQ = playOneRound gc Q epsilon [] startState
-            learn gc newQ newCounter (roundsLeft - 1)
+            learnModel gc newQ newCounter (roundsLeft - 1)
         | _ -> failwith "cannot handle negative rounds left"
+    
+    let learn (gc : GameConfiguration) (rounds : int) = learnModel gc Map.empty 0.0 rounds

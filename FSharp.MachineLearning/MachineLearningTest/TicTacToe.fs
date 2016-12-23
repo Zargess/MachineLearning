@@ -120,7 +120,7 @@ module TicTacToe =
             gamma = gamma
         }
 
-        let Q = QLearning.learn gameconfig Map.empty 0.0 500000
+        let Q = QLearning.learn gameconfig 500000
 
         let validInput (input : string) =
             try
@@ -148,7 +148,7 @@ module TicTacToe =
                 let action =
                         match getAvailableActions state with
                         | [] -> failwith "No actions available"
-                        | hd::tl -> QLearning.getActionGreedy Q state tl hd
+                        | hd::tl -> QLearning.getActionGreedy Q state (hd::tl)
                 let newState = performAction state action player
                 playGame Q newState (isEndState newState)
 
@@ -169,7 +169,7 @@ module TicTacToe =
                         match getAvailableActions initialState with
                         | [] -> failwith "No actions available"
                         | hd::tl ->
-                            QLearning.getActionGreedy (lookup Q) initialState tl hd
+                            QLearning.getActionGreedy (lookup Q) initialState (hd::tl)
                     let newState = performAction initialState action player
                     playGame (lookup Q) newState false |> ignore
                     inputFromUser false
