@@ -8,7 +8,7 @@ module QLearning =
     /// <param name="currentState">The current game state.</param>
     /// <param name="actions">The available actions for a state.</param>
     /// <returns>The action resulting with best expected value.</returns>
-    val getActionGreedy : (State -> Action -> float) -> State -> Action list -> Action
+    val getActionGreedy : (State<'a> -> Action -> float) -> State<'a> -> Action list -> Action
     
     /// <summary>
     /// Gets a random action from an list of actions given a way to get a random number.
@@ -24,4 +24,4 @@ module QLearning =
     /// <param name="gc">The configuration descriping the game design.</param>
     /// <param name="rounds">Number of games to play before termination.</param>
     /// <returns>The learned Q map.</returns>
-    val learn           : GameConfiguration -> int -> Map<(State * Action), float>
+    val learn           : GameConfiguration<'a> -> int -> Map<(State<'a> * Action), float>

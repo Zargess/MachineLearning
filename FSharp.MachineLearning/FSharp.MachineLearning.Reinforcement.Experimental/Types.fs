@@ -8,23 +8,23 @@ type Action = {
     value : int
 }
 
-type State = {
-    world : string list;
+type State<'a when 'a : comparison> = {
+    world : 'a;
     reward : float;
     agent : Agent
 }
 
-type GameConfiguration = {
-    isEndState : State -> bool;
-    getActions : State -> Action list;
-    performAction : State -> Action -> State;
-    rewardFunction : State -> float;
-    lookupFunction : Map<(State * Action), float> -> State -> Action -> float
+type GameConfiguration<'a when 'a : comparison> = {
+    isEndState : State<'a> -> bool;
+    getActions : State<'a> -> Action list;
+    performAction : State<'a> -> Action -> State<'a>;
+    rewardFunction : State<'a> -> float;
+    lookupFunction : Map<(State<'a> * Action), float> -> State<'a> -> Action -> float
     calcEpsilon : float -> float;
     getNextAgent : Agent -> Agent;
     random : System.Random;
     neutrualAction : Action;
-    getStartState : unit -> State;
-    alpha : float;
-    gamma : float
+    getStartState : unit -> State<'a>;
+    learningRate : float;
+    discountFactor : float
 }

@@ -10,7 +10,7 @@ module Utility =
 
         findAgentPosition   := State -> int
     *)
-    let findAgentPosition (state : State) = 
+    let findAgentPosition (state : State<string list>) = 
         let id = state.agent.id
         List.findIndex (fun x -> x = id) state.world
 

@@ -19,7 +19,7 @@ module TicTacToe =
 
     let getNextAgent agent = agent
 
-    let isWinningState (player : Agent) (state : State) =
+    let isWinningState (player : Agent) (state : State<string list>) =
         let id = player.id
         let rec checkWorld id (world : string list) winningTuples =
             match winningTuples with
@@ -57,7 +57,7 @@ module TicTacToe =
 
     (* TODO : Fix the usage of rewardFunction in this function *)
     (* TODO : Make another version that does not perform a random action *)
-    let performActionWithRandom (state : State) (action : Action) =
+    let performActionWithRandom (state : State<string list>) (action : Action) =
         match action.value with
         | x when x < 0 -> state
         | _ ->
@@ -72,7 +72,7 @@ module TicTacToe =
             | None -> tempState
             | Some(x) -> { world = List.replaceAt tempState.world "o" x.value; reward = rewardFunction state; agent = state.agent }
 
-    let performAction (state : State) (action : Action) (agent : Agent) =
+    let performAction (state : State<string list>) (action : Action) (agent : Agent) =
         match action.value with
         | x when x < 0 -> state
         | _ -> {
@@ -81,7 +81,7 @@ module TicTacToe =
                 agent = agent
             }
 
-    let lookup (map : Map<(State * Action), float>) (state : State) (action : Action) =
+    let lookup (map : Map<(State<string list> * Action), float>) (state : State<string list>) (action : Action) =
         match map.ContainsKey((state, action)) with
         | true -> map.[(state, action)]
         | false -> 0.0
@@ -92,7 +92,7 @@ module TicTacToe =
 
     let getStartState () = initialState
 
-    let printBoard state =
+    let printBoard (state : State<string list>) =
         printfn "%O" "------------------"
         printfn "%O" (state.world.[0] + "\t" + state.world.[1] + "\t" + state.world.[2])
         printfn "%O" "------------------"
@@ -105,7 +105,7 @@ module TicTacToe =
         let alpha = 0.5
         let gamma = 1.0
 
-        let gameconfig : GameConfiguration = {
+        let gameconfig : GameConfiguration<string list> = {
             isEndState = isEndState;
             getActions = getAvailableActions;
             performAction = performActionWithRandom;
@@ -116,8 +116,8 @@ module TicTacToe =
             random = random;
             neutrualAction = neutrualAction;
             getStartState = getStartState;
-            alpha = alpha;
-            gamma = gamma
+            learningRate = alpha;
+            discountFactor = gamma
         }
 
         let Q = QLearning.learn gameconfig 500000

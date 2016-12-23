@@ -15,30 +15,30 @@ module FastestRoute =
 
     let getNextAgent (agent : Agent) = agent
 
-    let performAction (state : State) (action : Action) = {
+    let performAction (state : State<string list>) (action : Action) = {
         world = List.replaceAt initialWorld state.agent.id action.value;
         reward = state.reward;
         agent = state.agent
     }
 
-    let isWinningState (state : State) =
+    let isWinningState (state : State<string list>) =
         let pos = Utility.findAgentPosition state
         match pos with
         | 5 -> true
         | _ -> false
 
-    let rewardFunction (state : State) = 
+    let rewardFunction (state : State<string list>) = 
         match isWinningState state with
         | true -> 100.0
         | false -> 0.0
 
-    let getAvailableActions (actionMap : Map<int, int list>) (state : State) =
+    let getAvailableActions (actionMap : Map<int, int list>) (state : State<string list>) =
         let position = Utility.findAgentPosition state
         actionMap.[position]
         |> List.map (fun x -> { value = x; })
 
     (* TODO : Consider rewriting this so it does not return a 3 tuple *)
-    let lookupFunction (map : Map<(State * Action), float>) (state : State) (action : Action) =
+    let lookupFunction (map : Map<(State<string list> * Action), float>) (state : State<string list>) (action : Action) =
         match map.ContainsKey((state, action)) with
         | true -> map.[(state, action)]
         | false -> 0.0
@@ -51,7 +51,7 @@ module FastestRoute =
         }
         performAction initialState action
     
-    let isEndState (state : State) = isWinningState state
+    let isEndState (state : State<string list>) = isWinningState state
 
     let run () =
         let actionMap = Map.ofList [ (0, [4;]); (1, [3; 5;]); (2, [3;]); (3, [1; 2; 4]); (4, [0; 3; 5;]); (5, [1; 4;]); ]
@@ -63,7 +63,7 @@ module FastestRoute =
 
         let getStartState () = getRandomStartState random
 
-        let gameconfig : GameConfiguration = {
+        let gameconfig : GameConfiguration<string list> = {
             isEndState = isEndState;
             getActions = getActions;
             performAction = performAction;
@@ -74,8 +74,8 @@ module FastestRoute =
             random = random;
             neutrualAction = neutrualAction;
             getStartState = getStartState;
-            alpha = alpha;
-            gamma = gamma
+            learningRate = alpha;
+            discountFactor = gamma
         }
 
         let Q = QLearning.learn gameconfig 50000
