@@ -27,7 +27,7 @@ module LoveLetter =
         let hand, opponentHand, deck = getHandCardsAndNewDeck shuffledDeck
         { hand = hand; opponentHand = opponentHand; discardedCards = []; deck = deck; }
 
-    let initialState = {
+    let createInitialState() = {
         world = createInitialWorld();
         reward = 0.0;
         agent = { id = "computer" }
