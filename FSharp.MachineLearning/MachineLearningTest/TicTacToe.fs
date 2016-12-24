@@ -1,5 +1,6 @@
 ﻿namespace MachineLearningTestCases
 
+open System
 open Zargess.MachineLearning.ReinforcementLearning
 
 module TicTacToe =
@@ -120,7 +121,7 @@ module TicTacToe =
             discountFactor = gamma
         }
 
-        let Q = QLearning.learn gameconfig 500000
+        let Q = QLearning.learn gameconfig 50000
 
         let validInput (input : string) =
             try
@@ -129,6 +130,7 @@ module TicTacToe =
             with _ -> false
 
         let rec playGame Q state ended =
+            Console.Clear()
             printBoard state
             match ended with
             | true -> state
